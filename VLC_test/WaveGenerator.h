@@ -5,6 +5,57 @@
 class WaveGenerator
 {
 public:
+	
+	//length_of_wave: How many frames to represent one wave which carry one bit
+	static vector<float> createWaveGivenFPS(vector<SymbolData> &msg, int length_of_wave)
+	{
+		vector<float> amplitudes;
+		int framerate = Parameters::fps; //get the frame rate
+
+		//To ensure the length of wave is even
+		if (framerate%length_of_wave == 0 && length_of_wave % 2 == 0)
+		{
+			for (int i = 0; i < msg.size(); i++)
+				//For each number in the message
+			{
+				vector<float> sample;
+				//The wave of bit 1
+				if (msg[i].value == 1)
+				{
+					for (int i = 0; i < length_of_wave / 2; i++)
+					{
+						sample.push_back(msg[i].amplitude);
+					}
+					for (int j = length_of_wave / 2; j < length_of_wave; j++)
+					{
+						sample.push_back(-msg[i].amplitude);
+					}
+				}
+				//The wave of bit 0
+				if (msg[i].value == 0)
+				{
+					for (int i = 0; i < length_of_wave / 2; i++)
+					{
+						sample.push_back(-msg[i].amplitude);
+					}
+					for (int j = length_of_wave / 2; j < length_of_wave; j++)
+					{
+						sample.push_back(msg[i].amplitude);
+					}
+				}
+				amplitudes.insert(amplitudes.end(), sample.begin(), sample.end());
+				cout << msg[i].symbol;
+			}
+			cout << endl;
+			return amplitudes;
+
+		}
+		//If illegal length of wave is used, system will return the original amplitudes
+		else{
+			return amplitudes;
+		}
+
+	}
 	// symbol_time: how many milliseconds will the symbol last
 	static vector<float> createWaveGivenFPS(vector<SymbolData> &msg,bool sampling = true)
 	{
